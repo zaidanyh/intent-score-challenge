@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.os.Message;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ResultActivity extends AppCompatActivity {
     private TextView result;
     private String message;
+    private ArrayList<String> ListPemain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +22,16 @@ public class ResultActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             message = bundle.getString("RESULT_KEY");
-            result.setText(message);
+            if (message.equals("DRAW")) {
+                result.setText(message);
+            } else {
+                ListPemain = getIntent().getStringArrayListExtra("PEMAIN_KEY");
+                String result = message+"\n";
+                for (int i = 0; i< ListPemain.size(); i++) {
+                    result+=ListPemain.get(i)+"\n";
+                }
+                this.result.setText(result);
+            }
         }
     }
 }

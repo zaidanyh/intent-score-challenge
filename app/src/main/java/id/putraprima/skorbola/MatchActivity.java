@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MatchActivity extends AppCompatActivity {
     private TextView homeText, awayText, scoreHome, scoreAway;
@@ -20,7 +21,8 @@ public class MatchActivity extends AppCompatActivity {
     private Bitmap homeBitmap, awayBitmap;
     private Uri homeUri, awayUri;
     private String teamHome, teamAway, Result;
-    private String ScorerH, ScorerA;
+    private ArrayList<String> ScorerH = new ArrayList<>();
+    private ArrayList<String> ScorerA = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,41 +74,43 @@ public class MatchActivity extends AppCompatActivity {
 
     public void handleHomeScore(View view) {
         Intent in = new Intent(this, ScorerActivity.class);
-        startActivity(in);
         startActivityForResult(in, 1);
-        scoreH += 1;
-        scoreHome.setText(Integer.toString(scoreH));
     }
 
     public void handleAwayScore(View view) {
         Intent intent = new Intent(this, ScorerActivity.class);
-        startActivity(intent);
         startActivityForResult(intent, 2);
-        scoreA += 1;
-        scoreAway.setText(Integer.toString(scoreA));
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             String Message = data.getStringExtra("SCORER");
-            ScorerH += Message;
+            ScorerH.add(Message);
+            scoreH += 1;
+            scoreHome.setText(Integer.toString(scoreH));
 
         } else if (requestCode == 2) {
             String Message = data.getStringExtra("SCORER");
-            ScorerA += Message;
+            ScorerA.add(Message);
+            scoreA += 1;
+            scoreAway.setText(Integer.toString(scoreA));
         }
     }
     public void handleResult(View view) {
+        Intent intent = new Intent(this, ResultActivity.class);
         if (scoreH > scoreA) {
-            Result = teamHome+ " WIN "+ScorerH;
+            Result = teamHome+ " WIN\n";
+            intent.putExtra("RESULT_KEY", Result);
+            intent.putExtra("PEMAIN_KEY", ScorerH);
         } else if (scoreA > scoreH) {
-            Result = teamAway+" WIN "+ScorerA;
+            Result = teamAway+" WIN\n";
+            intent.putExtra("RESULT_KEY", Result);
+            intent.putExtra("PEMAIN_KEY", Result);
         } else {
             Result ="DRAW";
+            intent.putExtra("RESULT_KEY", Result);
         }
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("RESULT_KEY", Result);
         startActivity(intent);
     }
 }
